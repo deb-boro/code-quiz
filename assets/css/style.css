@@ -85,6 +85,14 @@ section button:hover{
   border-top: 1px solid var(--color-grey);
 }
 
+.final-score-initial-container {
+    text-align: left;
+}
+.initial{
+    padding: 10px;
+}
+
+
 footer {
   font-size: medium;
   text-align: center;

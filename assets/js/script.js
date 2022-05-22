@@ -6,49 +6,60 @@ var quizDescription = document.querySelector('.quiz-description') //quiz -descri
 var containerQuestion = document.querySelector('.question-container') //div - question
 var containerAnswer = document.querySelector('.answer-container') //div - answer options
 var startButton = document.querySelector('.btn-start-quiz')
-var displayResult = document.querySelector('.result-container') //section - correct-wrong answer
+var resultContainer = document.querySelector('.result-container') //section - display result
+var finalScoreContainer = document.querySelector('.final-score-container') //div - final score display
+var initialsContainer = document.querySelector('.initials-container') //div - initials submit container
 var questionIdCounter = 0
+var quesAnsObj = {
+  Q1:
+    'Which of the following function of String object extracts a section of a string and returns a new string?',
+  Q1Ans: ['1. slice()', '2. split()', '3. replace()', '4. search()'], //1 - correct
+  Q2:
+    'Which of the following function of Number object returns a string value version of the current number?',
+  Q2Ans: [
+    '1. toPrecision',
+    '2. toFixed()',
+    '3. toLocaleString()',
+    '4. toString()', //correct
+  ],
+  Q3:
+    'Which of the following function of Number object returns the number value?',
+  Q3Ans: [
+    '1. toString()',
+    '2. valueOf()', //correct
+    '3. toLocaleString()',
+    '4. toPrecision()',
+  ],
 
-var createQuestionAnswerEl = function (questionIdCounter) {
-  var quesAnsObj = {
-    Q1:
-      'Which of the following function of String object extracts a section of a string and returns a new string?',
-    Q1Ans: ['1. slice()', '2. split()', '3. replace()', '4. search()'], //1 - correct
-    Q2:
-      'Which of the following function of Number object returns a string value version of the current number?',
-    Q2Ans: [
-      '1. toPrecision',
-      '2. toFixed()',
-      '3. toLocaleString()',
-      '4. toString()', //correct
-    ],
-    Q3:
-      'Which of the following function of Number object returns the number value?',
-    Q3Ans: [
-      '1. toString()',
-      '2. valueOf()', //correct
-      '3. toLocaleString()',
-      '4. toPrecision()',
-    ],
+  Q4: 'Which of the following code creates an object?',
+  Q4Ans: [
+    '1. var book = Object()',
+    '2. var book = new Object()', //correct
+    '3. var book = new OBJECT()',
+    '4. var book = new Book()',
+  ],
+  Q5:
+    'Which of the following function of Array object creates a new array with all of the elements of this array for which the provided filtering function returns true?',
 
-    Q4: 'Which of the following code creates an object?',
-    Q4Ans: [
-      '1. var book = Object()',
-      '2. var book = new Object()', //correct
-      '3. var book = new OBJECT()',
-      '4. var book = new Book()',
-    ],
-    Q5:
-      'Which of the following function of Array object creates a new array with all of the elements of this array for which the provided filtering function returns true?',
+  Q5Ans: [
+    '1. concat()',
+    '2. every()',
+    '3. filter()', //correct
+    '4. some()',
+  ],
 
-    Q5Ans: [
-      '1. concat()',
-      '2. every()',
-      '3. filter()', //correct
-      '4. some()',
-    ],
-  }
+  finalMesg: 'All Done !!',
+}
 
+var arrCorrectAnswer = [
+  '1. slice()',
+  '4. toString()',
+  '2. valueOf()',
+  '2. var book = new Object()',
+  '3. filter()',
+]
+
+var createQuestionAnswerEl = function (questionIdCounter, quesAnsObj) {
   var questionContent = document.createElement('h2')
   questionContent.className = 'question-quiz' //h2
   var answerListContent = document.createElement('ul')
@@ -66,7 +77,7 @@ var createQuestionAnswerEl = function (questionIdCounter) {
         answerListContent.setAttribute('data-qa-id', questionIdCounter)
         listAnswerEl.setAttribute('data-qa-id', questionIdCounter)
 
-        listAnswerEl.setAttribute('name', quesAnsObj.Q1Ans[i])
+        listAnswerEl.setAttribute('data-val', quesAnsObj.Q1Ans[i])
         listAnswerEl.textContent = quesAnsObj.Q1Ans[i]
         answerListContent.appendChild(listAnswerEl)
       }
@@ -77,7 +88,7 @@ var createQuestionAnswerEl = function (questionIdCounter) {
       for (var i = 0; i < quesAnsObj.Q2Ans.length; i++) {
         var listAnswerEl = document.createElement('li') //li
         listAnswerEl.className = 'answer' // <li class =""></li>
-        listAnswerEl.setAttribute('name', quesAnsObj.Q2Ans[i])
+        listAnswerEl.setAttribute('data-val', quesAnsObj.Q2Ans[i])
         //add qa id as a custom attribute
         answerListContent.setAttribute('data-qa-id', questionIdCounter)
         listAnswerEl.setAttribute('data-qa-id', questionIdCounter)
@@ -91,7 +102,7 @@ var createQuestionAnswerEl = function (questionIdCounter) {
       for (var i = 0; i < quesAnsObj.Q3Ans.length; i++) {
         var listAnswerEl = document.createElement('li') //li
         listAnswerEl.className = 'answer' // <li class =""></li>
-        listAnswerEl.setAttribute('name', quesAnsObj.Q3Ans[i])
+        listAnswerEl.setAttribute('data-val', quesAnsObj.Q3Ans[i])
         //add qa id as a custom attribute
         answerListContent.setAttribute('data-qa-id', questionIdCounter)
         listAnswerEl.setAttribute('data-qa-id', questionIdCounter)
@@ -105,7 +116,7 @@ var createQuestionAnswerEl = function (questionIdCounter) {
       for (var i = 0; i < quesAnsObj.Q4Ans.length; i++) {
         var listAnswerEl = document.createElement('li') //li
         listAnswerEl.className = 'answer' // <li class =""></li>
-        listAnswerEl.setAttribute('name', quesAnsObj.Q4Ans[i])
+        listAnswerEl.setAttribute('data-val', quesAnsObj.Q4Ans[i])
         //add qa id as a custom attribute
         answerListContent.setAttribute('data-qa-id', questionIdCounter)
         listAnswerEl.setAttribute('data-qa-id', questionIdCounter)
@@ -119,7 +130,7 @@ var createQuestionAnswerEl = function (questionIdCounter) {
       for (var i = 0; i < quesAnsObj.Q5Ans.length; i++) {
         var listAnswerEl = document.createElement('li') //li
         listAnswerEl.className = 'answer' // <li class =""></li>
-        listAnswerEl.setAttribute('name', quesAnsObj.Q5Ans[i])
+        listAnswerEl.setAttribute('data-val', quesAnsObj.Q5Ans[i])
         //add qa id as a custom attribute
         answerListContent.setAttribute('data-qa-id', questionIdCounter)
         listAnswerEl.setAttribute('data-qa-id', questionIdCounter)
@@ -127,6 +138,32 @@ var createQuestionAnswerEl = function (questionIdCounter) {
         answerListContent.appendChild(listAnswerEl)
       }
       break
+    case 5:
+      var finalScoreHeading = document.createElement('h2')
+      finalScoreHeading.className = 'test-completed-heading'
+      finalScoreHeading.textContent = quesAnsObj.finalMesg
+      finalScoreContainer.appendChild(finalScoreHeading)
+      var finalScoreContent = document.createElement('p')
+      finalScoreContent.className = 'final-score'
+      finalScoreContent.textContent = 'Your Final Score is :'
+      var displayTotalScore = document.createElement('span')
+      displayTotalScore.className = 'total-score'
+      displayTotalScore.textContent = '22'
+      finalScoreContent.appendChild(displayTotalScore)
+      finalScoreContainer.appendChild(finalScoreContent)
+      var initialLabel = document.createElement('label')
+      initialLabel.className = 'initials-label'
+      initialLabel.textContent = 'Enter Your Initials :'
+      initialsContainer.appendChild(initialLabel)
+      var inputInitials = document.createElement('input')
+      inputInitials.className = 'enter-initials'
+      inputInitials.setAttribute('type', 'text')
+      inputInitials.setAttribute('placeholder', 'Enter your initial....')
+      initialsContainer.appendChild(inputInitials)
+      var btnSubmit = document.createElement('button')
+      btnSubmit.className = 'btn-submit'
+      btnSubmit.textContent = 'Submit'
+      initialsContainer.appendChild(btnSubmit)
   }
   containerQuestion.appendChild(questionContent)
   containerAnswer.appendChild(answerListContent)
@@ -148,8 +185,26 @@ var quizAnswerHandler = function (event) {
     answerList.remove()
     questionIdCounter++
 
-    createQuestionAnswerEl(questionIdCounter)
+    createQuestionAnswerEl(questionIdCounter, quesAnsObj)
+
     //writing the display result code
+    var choice = targetEl.getAttribute('data-val')
+    if (
+      document.querySelector(".display-result[data-val='result']") !=
+        undefined ||
+      document.querySelector(".display-result[data-val='result']") != null
+    ) {
+      document.querySelector(".display-result[data-val='result']").remove()
+    }
+    var displayResultEl = document.createElement('div') //div
+    displayResultEl.className = 'display-result'
+    if (arrCorrectAnswer.includes(choice)) {
+      displayResultEl.textContent = 'Correct !!'
+    } else {
+      displayResultEl.textContent = 'Wrong !!'
+    }
+    displayResultEl.setAttribute('data-val', 'result')
+    resultContainer.appendChild(displayResultEl)
   }
 }
 
@@ -159,7 +214,7 @@ var quizButtonHandler = function (event) {
   //start button was clicked
   if (targetEl.matches('.btn-start-quiz')) {
     quizInstruction.remove()
-    createQuestionAnswerEl(questionIdCounter)
+    createQuestionAnswerEl(questionIdCounter, quesAnsObj)
   }
 }
 containerAnswer.addEventListener('click', quizAnswerHandler)
