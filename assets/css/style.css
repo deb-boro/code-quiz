@@ -86,7 +86,7 @@ section button:hover{
   border-top: 1px solid var(--color-grey);
 }
 
-.final-score-initial-container {
+.final-score-initial-container  {
     text-align: left;
 }
 
@@ -100,6 +100,7 @@ section button:hover{
     padding: 5px 100px 5px 5px;
     background-color: rgb(237, 212, 237);
     border: 1px solid palevioletred;
+    border-radius: 10px;
 }
 
 .btn-submit{
@@ -116,6 +117,30 @@ section button:hover{
 .btn-submit:hover{
   background-color: rgb(230, 96, 230);
 }
+
+.view-scorelist-wrapper  {
+  text-align: left;
+  
+}
+
+.view-score-heading{
+  padding-left:30px;
+  padding-bottom: 15px;
+}
+.score-list{
+  padding-left:40px;
+  padding-bottom: 10px;
+  padding-top:10px;
+  background-color: rgb(233, 196, 233);
+  opacity:50%;
+  margin:15px;
+  
+}
+.initial-score{
+  font-weight: bold;
+}
+
+
 
 footer {
   font-size: medium;

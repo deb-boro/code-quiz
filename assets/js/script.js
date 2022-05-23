@@ -9,8 +9,14 @@ var startButton = document.querySelector('.btn-start-quiz')
 var resultContainer = document.querySelector('.result-container') //section - display result
 var finalScoreContainer = document.querySelector('.final-score-container') //div - final score display
 var initialsContainer = document.querySelector('.initials-container') //div - initials submit container
+var viewScoreList = document.querySelector('.view-high-score') // view the score list after submit button
+var btnGoBackClearScore = document.querySelector(
+  '.go-back-clear-score-container',
+) //button go back & clear
 var questionIdCounter = 0
 var totalScore = 0
+var initScore = {}
+var highScore = []
 var quesAnsObj = {
   Q1:
     'Which of the following function of String object extracts a section of a string and returns a new string?',
@@ -222,6 +228,20 @@ var quizAnswerHandler = function (event) {
   }
 }
 
+var saveScore = function (key, highScore) {
+  localStorage.setItem(key, JSON.stringify(highScore))
+}
+
+var loadHighScore = function (key) {
+  var loadScore = localStorage.getItem(key)
+
+  if (!loadScore) {
+    return false
+  }
+  var loadHighScore = JSON.parse(loadScore)
+  return loadHighScore //returning object of initial and score
+}
+
 var quizButtonHandler = function (event) {
   var targetEl = event.target
 
@@ -231,5 +251,30 @@ var quizButtonHandler = function (event) {
     createQuestionAnswerEl(questionIdCounter, quesAnsObj)
   }
 }
+var submitButtonHandler = function (event) {
+  event.preventDefault()
+
+  var targetEl = event.target
+  if (targetEl.matches('.btn-submit')) {
+    var finalScore = document.querySelector('.total-score').textContent
+    var inputInitial = document.querySelector('.enter-initials').value
+    if (!inputInitial) {
+      alert('Please provide your initial to save the score')
+    }
+
+    var objInitScore = {
+      initial: inputInitial,
+      score: finalScore,
+    }
+    highScore.push(objInitScore)
+    var keyStorageScore = 'scores'
+    saveScore(keyStorageScore, highScore)
+    var objInitialScore = loadHighScore(keyStorageScore) //loading the object to a variable
+    finalScoreContainer.remove()
+    initialsContainer.remove()
+  }
+}
+
+initialsContainer.addEventListener('click', submitButtonHandler)
 containerAnswer.addEventListener('click', quizAnswerHandler)
 startButton.addEventListener('click', quizButtonHandler)
