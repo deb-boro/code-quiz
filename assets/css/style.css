@@ -9,6 +9,7 @@
   --color-white:rgba(255, 255, 255, 0.949);
   --color-lightPurple: rgb(230, 96, 230)
 
+
 :}
 
 header {
@@ -88,10 +89,33 @@ section button:hover{
 .final-score-initial-container {
     text-align: left;
 }
-.initial{
-    padding: 10px;
+
+.total-score {
+  font-size: larger;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-style: italic;
+  font-weight: bolder;
+}
+.enter-initials{
+    padding: 5px 100px 5px 5px;
+    background-color: rgb(237, 212, 237);
+    border: 1px solid palevioletred;
 }
 
+.btn-submit{
+  color: white;
+  font-weight: bold;
+  font-size: 15px;
+  padding: 5px;
+  margin: 20px;
+  background-color: var(--color-blue);
+  border-radius: 10px;
+  border: none;
+
+}
+.btn-submit:hover{
+  background-color: rgb(230, 96, 230);
+}
 
 footer {
   font-size: medium;

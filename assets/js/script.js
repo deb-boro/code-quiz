@@ -10,6 +10,7 @@ var resultContainer = document.querySelector('.result-container') //section - di
 var finalScoreContainer = document.querySelector('.final-score-container') //div - final score display
 var initialsContainer = document.querySelector('.initials-container') //div - initials submit container
 var questionIdCounter = 0
+var totalScore = 0
 var quesAnsObj = {
   Q1:
     'Which of the following function of String object extracts a section of a string and returns a new string?',
@@ -59,7 +60,11 @@ var arrCorrectAnswer = [
   '3. filter()',
 ]
 
-var createQuestionAnswerEl = function (questionIdCounter, quesAnsObj) {
+var createQuestionAnswerEl = function (
+  questionIdCounter,
+  quesAnsObj,
+  totalScore,
+) {
   var questionContent = document.createElement('h2')
   questionContent.className = 'question-quiz' //h2
   var answerListContent = document.createElement('ul')
@@ -145,10 +150,10 @@ var createQuestionAnswerEl = function (questionIdCounter, quesAnsObj) {
       finalScoreContainer.appendChild(finalScoreHeading)
       var finalScoreContent = document.createElement('p')
       finalScoreContent.className = 'final-score'
-      finalScoreContent.textContent = 'Your Final Score is :'
+      finalScoreContent.textContent = 'Your Final Score is : '
       var displayTotalScore = document.createElement('span')
       displayTotalScore.className = 'total-score'
-      displayTotalScore.textContent = '22'
+      displayTotalScore.textContent = totalScore
       finalScoreContent.appendChild(displayTotalScore)
       finalScoreContainer.appendChild(finalScoreContent)
       var initialLabel = document.createElement('label')
@@ -181,14 +186,22 @@ var quizAnswerHandler = function (event) {
     var answerList = document.querySelector(
       ".answers-list[data-qa-id='" + questionIdCounter + "']",
     )
+
+    //collect total Score
+    var choice = targetEl.getAttribute('data-val')
+    if (arrCorrectAnswer.includes(choice)) {
+      //adding score of 5 for correct answer
+      totalScore += 5
+    }
+
     question.remove()
     answerList.remove()
     questionIdCounter++
 
-    createQuestionAnswerEl(questionIdCounter, quesAnsObj)
+    createQuestionAnswerEl(questionIdCounter, quesAnsObj, totalScore)
 
     //writing the display result code
-    var choice = targetEl.getAttribute('data-val')
+
     if (
       document.querySelector(".display-result[data-val='result']") !=
         undefined ||
@@ -203,6 +216,7 @@ var quizAnswerHandler = function (event) {
     } else {
       displayResultEl.textContent = 'Wrong !!'
     }
+
     displayResultEl.setAttribute('data-val', 'result')
     resultContainer.appendChild(displayResultEl)
   }
