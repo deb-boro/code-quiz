@@ -14,18 +14,22 @@
     </header>
     <main class="page-content" id="page-content">
       <section class="quiz-instruction-wrapper">
-        <h2 class="heading-quiz">Coding Quiz Challenge</h2>
-        <p class="quiz-description">
-          The test contains 5 questions and time limit is 50 seconds.You will
-          get 5 point for each correct answer with maximum total of 25. At the
-          end of the Quiz,your total score will be displayed and you can save
-          the score by typing your initials in the textbox provided and clicking
-          on submit button. You can view your highest score by clicking on the
-          'View High Scores' link. Good Luck!!
-        </p>
-        <button class="btn-start-quiz">
-          Start Quiz
-        </button>
+        <div class="quiz-instruction-container">
+          <h2 class="heading-quiz" data-val="intro-heading">
+            Coding Quiz Challenge
+          </h2>
+          <p class="quiz-description" data-val="intro-desc">
+            The test contains 5 questions and time limit is 50 seconds.You will
+            get 5 point for each correct answer with maximum total of 25. At the
+            end of the Quiz,your total score will be displayed and you can save
+            the score by typing your initials in the textbox provided and
+            clicking on submit button. You can view your highest score by
+            clicking on the 'View High Scores' link. Good Luck!!
+          </p>
+          <button class="btn-start-quiz" data-val="start-quiz">
+            Start Quiz
+          </button>
+        </div>
       </section>
       <section class="question-answer-wrapper">
         <div class="question-container"></div>
@@ -37,16 +41,8 @@
       </section>
       <section class="result-container"></section>
       <section class="view-scorelist-wrapper">
-        <div class="view-high-score">
-          <!-- <h2 class="view-score-heading">High Scores</h2>
-          <ol class="score-list">
-            <li class="initial-score">AB-22</li>
-          </ol> -->
-        </div>
-        <div class="go-back-clear-score-container">
-          <!-- <button class=".btn-go-back">Go back</button>
-          <button class=".btn-clear-score">Clear high score</button> -->
-        </div>
+        <div class="view-high-score"></div>
+        <div class="go-back-clear-score-container"></div>
       </section>
     </main>
     <script src="./assets/js/script.js"></script>

@@ -1,5 +1,5 @@
 var mainContent = document.querySelector('#page-content') //page content
-var quizInstruction = document.querySelector('.quiz-instruction-wrapper') //quiz instruction //section
+var quizInstruction = document.querySelector('.quiz-instruction-container') //quiz instruction //div
 var questionAnswerContent = document.querySelector('.question-answer-wrapper') //question answer container
 var quizHeading = document.querySelector('.heading-quiz') //h2 quiz heading
 var quizDescription = document.querySelector('.quiz-description') //quiz -description
@@ -9,10 +9,10 @@ var startButton = document.querySelector('.btn-start-quiz')
 var resultContainer = document.querySelector('.result-container') //section - display result
 var finalScoreContainer = document.querySelector('.final-score-container') //div - final score display
 var initialsContainer = document.querySelector('.initials-container') //div - initials submit container
-var viewScoreList = document.querySelector('.view-high-score') // view the score list after submit button
+var viewScoreList = document.querySelector('.view-high-score') // div//view the score list after submit button
 var btnGoBackClearScore = document.querySelector(
   '.go-back-clear-score-container',
-) //button go back & clear
+) //div//button go back & clear
 var questionIdCounter = 0
 var totalScore = 0
 var initScore = {}
@@ -229,7 +229,9 @@ var quizAnswerHandler = function (event) {
 }
 
 var saveScore = function (key, highScore) {
-  localStorage.setItem(key, JSON.stringify(highScore))
+  var existingEntries = JSON.parse(localStorage.getItem(key) || '[]')
+  existingEntries.push(highScore)
+  localStorage.setItem(key, JSON.stringify(existingEntries))
 }
 
 var loadHighScore = function (key) {
@@ -242,25 +244,52 @@ var loadHighScore = function (key) {
   return loadHighScore //returning object of initial and score
 }
 
+var createScoreListEl = function (objInitScore) {
+  //create heading
+  var headingHighScore = document.createElement('h2')
+  headingHighScore.className = 'view-score-heading'
+  headingHighScore.textContent = 'High Scores'
+  viewScoreList.appendChild(headingHighScore)
+  // create ordered list of score
+  var orderListScore = document.createElement('ol')
+  orderListScore.className = 'score-list'
+  var scoreLine = document.createElement('li')
+  scoreLine.className = 'initial-score'
+  scoreLine.textContent =
+    objInitScore.initial + ' ' + ' - ' + ' ' + objInitScore.score
+  orderListScore.appendChild(scoreLine)
+  viewScoreList.appendChild(orderListScore)
+  //create go back button and clear score button
+  var btnGoBack = document.createElement('button')
+  btnGoBack.className = 'btn-go-back'
+  btnGoBack.textContent = 'Go back'
+  btnGoBackClearScore.appendChild(btnGoBack)
+  var btnClearScore = document.createElement('button')
+  btnClearScore.className = 'btn-clear-score'
+  btnClearScore.textContent = 'Clear high score'
+  btnGoBackClearScore.appendChild(btnClearScore)
+}
 var quizButtonHandler = function (event) {
   var targetEl = event.target
 
   //start button was clicked
-  if (targetEl.matches('.btn-start-quiz')) {
-    quizInstruction.remove()
-    createQuestionAnswerEl(questionIdCounter, quesAnsObj)
+  if (
+    targetEl.matches('.btn-start-quiz') ||
+    targetEl.matches(".btn-start-quiz[data-val='start-quiz']")
+  ) {
+    console.log('i am here - inside the if statement')
+    document.querySelector(".heading-quiz[data-val='intro-heading']").remove()
+    document.querySelector(".quiz-description[data-val='intro-desc']").remove()
+    document.querySelector(".btn-start-quiz[data-val='start-quiz']").remove()
+
+    createQuestionAnswerEl(questionIdCounter, quesAnsObj, totalScore)
   }
 }
 var submitButtonHandler = function (event) {
-  event.preventDefault()
-
   var targetEl = event.target
   if (targetEl.matches('.btn-submit')) {
     var finalScore = document.querySelector('.total-score').textContent
     var inputInitial = document.querySelector('.enter-initials').value
-    if (!inputInitial) {
-      alert('Please provide your initial to save the score')
-    }
 
     var objInitScore = {
       initial: inputInitial,
@@ -272,9 +301,45 @@ var submitButtonHandler = function (event) {
     var objInitialScore = loadHighScore(keyStorageScore) //loading the object to a variable
     finalScoreContainer.remove()
     initialsContainer.remove()
+    document.querySelector(".display-result[data-val='result']").remove()
+    createScoreListEl(objInitScore)
   }
 }
 
+var createIntroSection = function () {
+  //intro heading
+  var introHeading = document.createElement('h2')
+  introHeading.className = 'heading-quiz'
+  introHeading.textContent = 'Coding Quiz Challenge'
+  introHeading.setAttribute('data-val', 'intro-heading')
+  quizInstruction.appendChild(introHeading)
+
+  //intro description
+  var introDescription = document.createElement('p')
+  introDescription.className = 'quiz-description'
+  introDescription.setAttribute('data-val', 'intro-desc')
+  introDescription.textContent =
+    'The test contains 5 questions and time limit is 50 seconds.You will get 5 point for each correct answer with maximum total of 25. At the end of the Quiz,your total score will be displayed and you can save the score by typing your initials in the textbox provided and clicking on submit button. You can view your highest score by clicking on the "View High Scores" link. Good Luck!!'
+  quizInstruction.appendChild(introDescription)
+  //start button
+  var btnStart = document.createElement('button')
+  btnStart.className = 'btn-start-quiz'
+  btnStart.setAttribute('data-val', 'start-quiz')
+  btnStart.textContent = 'Start Quiz'
+  quizInstruction.appendChild(btnStart)
+}
+
+var goBackButtonHandler = function (event) {
+  var targetEl = event.target
+  if (targetEl.matches('.btn-go-back')) {
+    viewScoreList.remove()
+    btnGoBackClearScore.remove()
+    createIntroSection()
+    location.reload()
+  }
+}
+
+btnGoBackClearScore.addEventListener('click', goBackButtonHandler)
 initialsContainer.addEventListener('click', submitButtonHandler)
 containerAnswer.addEventListener('click', quizAnswerHandler)
 startButton.addEventListener('click', quizButtonHandler)
