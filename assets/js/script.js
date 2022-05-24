@@ -19,7 +19,7 @@ var timer = document.querySelector('.time-interval') // timer
 var questionIdCounter = 0
 var totalScore = 0
 var initScore = {}
-var highScore = []
+var arrScore = []
 var quesAnsObj = {
   Q1:
     'Which of the following function of String object extracts a section of a string and returns a new string?',
@@ -70,6 +70,7 @@ var arrCorrectAnswer = [
 ]
 var totalQuestions = 5
 var totalTime = 100
+var keyLocalStorage = 'SCORE'
 
 var createQuestionAnswerEl = function (
   questionIdCounter,
@@ -239,14 +240,17 @@ var saveScore = function (key, highScore) {
   localStorage.setItem(key, JSON.stringify(existingEntries)) //save it into the local storage again
 }
 
-var loadHighScore = function (key) {
-  var loadScore = localStorage.getItem(key)
+var loadLatestScore = function (key) {
+  var loadScore = localStorage.getItem(key) //string format of array of objects
 
   if (!loadScore) {
     return false
   }
-  var loadHighScore = JSON.parse(loadScore)
-  return loadHighScore //returning object of initial and score
+  var loadScoreArr = JSON.parse(loadScore) // converting the string format to array
+  var arrLength = loadScoreArr.length //array length
+  var arrLatestScore = loadScoreArr[arrLength - 1] //finding latest array inserted with index - find the values
+
+  return arrLatestScore
 }
 
 var createTimeInterval = function () {
@@ -281,7 +285,7 @@ var createTimeInterval = function () {
   }
 }
 
-var createScoreListEl = function (objInitScore) {
+var createScoreListEl = function (arrLatestScore) {
   //create heading
   var headingHighScore = document.createElement('h2')
   headingHighScore.className = 'view-score-heading'
@@ -293,7 +297,7 @@ var createScoreListEl = function (objInitScore) {
   var scoreLine = document.createElement('li')
   scoreLine.className = 'initial-score'
   scoreLine.textContent =
-    objInitScore.initial + ' ' + ' - ' + ' ' + objInitScore.score
+    arrLatestScore.initial + ' ' + ' - ' + ' ' + arrLatestScore.score
   orderListScore.appendChild(scoreLine)
   viewScoreList.appendChild(orderListScore)
   //create go back button and clear score button
@@ -301,10 +305,11 @@ var createScoreListEl = function (objInitScore) {
   btnGoBack.className = 'btn-go-back'
   btnGoBack.textContent = 'Go back'
   btnGoBackClearScore.appendChild(btnGoBack)
-  var btnClearScore = document.createElement('button')
-  btnClearScore.className = 'btn-clear-score'
-  btnClearScore.textContent = 'Clear high score'
-  btnGoBackClearScore.appendChild(btnClearScore)
+  //for now holding on to the clear button
+  // var btnClearScore = document.createElement('button')
+  // btnClearScore.className = 'btn-clear-score'
+  // btnClearScore.textContent = 'Clear high score'
+  // btnGoBackClearScore.appendChild(btnClearScore)
   if (document.querySelector('.time-interval') != null) {
     document.querySelector('.time-interval').remove()
   }
@@ -336,19 +341,17 @@ var submitButtonHandler = function (event) {
       initial: inputInitial,
       score: finalScore,
     }
-    highScore.push(objInitScore) //high score is a array and inserting the obj into the array
+    arrScore.push(objInitScore) //high score is a array and inserting the obj into the array
 
-    var keyStorageScore = 'scores'
-    saveScore(keyStorageScore, highScore) // key and value - value here is an array of object
-    var objInitialScore = loadHighScore(keyStorageScore) //loading the object to a variable
-
+    saveScore(keyLocalStorage, arrScore) // key and value - value here is an array of object
+    var arrLatestScore = loadLatestScore(keyLocalStorage) //loading the latest array inserted to the variable
     finalScoreContainer.remove()
     initialsContainer.remove()
     if (document.querySelector(".display-result[data-val='result']") != null) {
       document.querySelector(".display-result[data-val='result']").remove()
     }
 
-    createScoreListEl(objInitScore) //creating score list passing the object
+    createScoreListEl(arrLatestScore[0]) //creating score list passing the array
   }
 }
 
@@ -408,7 +411,9 @@ var viewHighScoreHandler = function (event) {
     if (document.querySelector('.time-interval') != null) {
       document.querySelector('.time-interval').remove()
     }
-    createScoreListEl(objInitScore)
+
+    var arrLatestScore = loadLatestScore(keyLocalStorage)
+    createScoreListEl(arrLatestScore[0])
   }
 }
 var removeResultDisplayHandler = function (event) {
