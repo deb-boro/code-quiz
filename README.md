@@ -20,3 +20,8 @@ Copy and paste below link in any browser:
 https://deb-boro.github.io/code-quiz/
 
 ## Screenshots
+
+(https://github.com/deb-boro/code-quiz/blob/main/assets/images/Screen%20Shot%202022-05-24%20at%203.28.04%20PM.png?raw=true?)
+(https://github.com/deb-boro/code-quiz/blob/main/assets/images/Screen%20Shot%202022-05-24%20at%203.28.27%20PM.png?raw=true)
+(https://github.com/deb-boro/code-quiz/blob/main/assets/images/Screen%20Shot%202022-05-24%20at%203.28.48%20PM.png?raw=true)
+(https://github.com/deb-boro/code-quiz/blob/main/assets/images/Screen%20Shot%202022-05-24%20at%203.28.56%20PM.png?raw=true)
