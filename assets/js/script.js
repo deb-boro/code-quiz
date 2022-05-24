@@ -69,7 +69,7 @@ var arrCorrectAnswer = [
   '3. filter()',
 ]
 var totalQuestions = 5
-var totalTime = 25
+var totalTime = 30
 var keyLocalStorage = 'SCORE'
 
 var createQuestionAnswerEl = function (
@@ -377,7 +377,8 @@ var createIntroSection = function () {
   introDescription.className = 'quiz-description'
   introDescription.setAttribute('data-val', 'intro-desc')
   introDescription.textContent =
-    'The test contains 5 questions and time limit is 50 seconds.You will get 5 point for each correct answer with maximum total of 25. At the end of the Quiz,your total score will be displayed and you can save the score by typing your initials in the textbox provided and clicking on submit button. You can view your highest score by clicking on the "View High Scores" link. Good Luck!!'
+    'The test contains 5 questions and time limit is 30 seconds.You will get 5 point for each correct answer with maximum total of 30. At the end of the Quiz,your total score will be displayed and you can save the score by typing your initials in the textbox provided and clicking on submit button. You can view your highest score by clicking on the View High Scores link. Good Luck!!'
+
   quizInstruction.appendChild(introDescription)
   //start button
   var btnStart = document.createElement('button')
@@ -436,7 +437,6 @@ var viewHighScoreHandler = function (event) {
       document.querySelector('.view-score-heading').remove()
       document.querySelector('.score-list').remove()
       document.querySelector('.btn-go-back').remove()
-      console.log('i am being executed.')
     }
 
     if (document.querySelector('.time-interval') != null) {
