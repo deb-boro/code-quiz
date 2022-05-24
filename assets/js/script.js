@@ -13,6 +13,7 @@ var viewScoreList = document.querySelector('.view-high-score') // div//view the 
 var btnGoBackClearScore = document.querySelector(
   '.go-back-clear-score-container',
 ) //div//button go back & clear
+var timer = document.querySelector('.time-interval') // timer
 var questionIdCounter = 0
 var totalScore = 0
 var initScore = {}
@@ -65,6 +66,8 @@ var arrCorrectAnswer = [
   '2. var book = new Object()',
   '3. filter()',
 ]
+var totalQuestions = 5
+var totalTime = 25
 
 var createQuestionAnswerEl = function (
   questionIdCounter,
@@ -244,6 +247,25 @@ var loadHighScore = function (key) {
   return loadHighScore //returning object of initial and score
 }
 
+var createTimeInterval = function () {
+  var timeInterval = setInterval(mainTimer, 1000)
+  function mainTimer() {
+    //timer.textContent = 'Time Remaining :' + ' ' + totalTime
+
+    totalTime--
+
+    if (totalTime < 0) {
+      timer.textContent = 'Time Remaining :' + ' ' + (totalTime + 1)
+      clearInterval(timeInterval)
+      var question = document.querySelector('.question-quiz')
+      var answerList = document.querySelector('.answers-list')
+      question.remove()
+      answerList.remove()
+      createQuestionAnswerEl(totalQuestions, quesAnsObj, totalScore)
+    }
+  }
+}
+
 var createScoreListEl = function (objInitScore) {
   //create heading
   var headingHighScore = document.createElement('h2')
@@ -277,12 +299,12 @@ var quizButtonHandler = function (event) {
     targetEl.matches('.btn-start-quiz') ||
     targetEl.matches(".btn-start-quiz[data-val='start-quiz']")
   ) {
-    console.log('i am here - inside the if statement')
     document.querySelector(".heading-quiz[data-val='intro-heading']").remove()
     document.querySelector(".quiz-description[data-val='intro-desc']").remove()
     document.querySelector(".btn-start-quiz[data-val='start-quiz']").remove()
 
     createQuestionAnswerEl(questionIdCounter, quesAnsObj, totalScore)
+    // createTimeInterval()
   }
 }
 var submitButtonHandler = function (event) {
@@ -299,10 +321,13 @@ var submitButtonHandler = function (event) {
     var keyStorageScore = 'scores'
     saveScore(keyStorageScore, highScore)
     var objInitialScore = loadHighScore(keyStorageScore) //loading the object to a variable
+    //console.log('the object is: ' + objInitialScore)
     finalScoreContainer.remove()
     initialsContainer.remove()
-    document.querySelector(".display-result[data-val='result']").remove()
-    createScoreListEl(objInitScore)
+    if (document.querySelector(".display-result[data-val='result']") != null) {
+      document.querySelector(".display-result[data-val='result']").remove()
+    }
+    createScoreListEl(objInitialScore)
   }
 }
 
