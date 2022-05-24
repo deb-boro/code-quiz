@@ -1,4 +1,5 @@
 var mainContent = document.querySelector('#page-content') //page content
+var clickHighScore = document.querySelector('.view-score') //view high scores
 var quizInstruction = document.querySelector('.quiz-instruction-container') //quiz instruction //div
 var questionAnswerContent = document.querySelector('.question-answer-wrapper') //question answer container
 var quizHeading = document.querySelector('.heading-quiz') //h2 quiz heading
@@ -67,7 +68,7 @@ var arrCorrectAnswer = [
   '3. filter()',
 ]
 var totalQuestions = 5
-var totalTime = 25
+var totalTime = 100
 
 var createQuestionAnswerEl = function (
   questionIdCounter,
@@ -201,40 +202,40 @@ var quizAnswerHandler = function (event) {
     if (arrCorrectAnswer.includes(choice)) {
       //adding score of 5 for correct answer
       totalScore += 5
+    } else if (!arrCorrectAnswer.includes(choice)) {
+      timer.textContent = 'Time Remaining :' + ' ' + totalTime
     }
-
-    question.remove()
-    answerList.remove()
-    questionIdCounter++
-
-    createQuestionAnswerEl(questionIdCounter, quesAnsObj, totalScore)
-
-    //writing the display result code
-
-    if (
-      document.querySelector(".display-result[data-val='result']") !=
-        undefined ||
-      document.querySelector(".display-result[data-val='result']") != null
-    ) {
-      document.querySelector(".display-result[data-val='result']").remove()
-    }
-    var displayResultEl = document.createElement('div') //div
-    displayResultEl.className = 'display-result'
-    if (arrCorrectAnswer.includes(choice)) {
-      displayResultEl.textContent = 'Correct !!'
-    } else {
-      displayResultEl.textContent = 'Wrong !!'
-    }
-
-    displayResultEl.setAttribute('data-val', 'result')
-    resultContainer.appendChild(displayResultEl)
   }
+
+  question.remove()
+  answerList.remove()
+  questionIdCounter++
+
+  createQuestionAnswerEl(questionIdCounter, quesAnsObj, totalScore)
+
+  //writing the display result code
+  if (
+    document.querySelector(".display-result[data-val='result']") != undefined ||
+    document.querySelector(".display-result[data-val='result']") != null
+  ) {
+    document.querySelector(".display-result[data-val='result']").remove()
+  }
+  var displayResultEl = document.createElement('div') //div
+  displayResultEl.className = 'display-result'
+  if (arrCorrectAnswer.includes(choice)) {
+    displayResultEl.textContent = 'Correct !!'
+  } else {
+    displayResultEl.textContent = 'Wrong !!'
+  }
+
+  displayResultEl.setAttribute('data-val', 'result')
+  resultContainer.appendChild(displayResultEl)
 }
 
 var saveScore = function (key, highScore) {
-  var existingEntries = JSON.parse(localStorage.getItem(key) || '[]')
-  existingEntries.push(highScore)
-  localStorage.setItem(key, JSON.stringify(existingEntries))
+  var existingEntries = JSON.parse(localStorage.getItem(key) || '[]') //if empty or existing string to arr
+  existingEntries.push(highScore) // push new array to the existing array
+  localStorage.setItem(key, JSON.stringify(existingEntries)) //save it into the local storage again
 }
 
 var loadHighScore = function (key) {
@@ -248,10 +249,11 @@ var loadHighScore = function (key) {
 }
 
 var createTimeInterval = function () {
+  timer.textContent = 'Time Remaining :' + ' ' + totalTime
+
+  // set time
   var timeInterval = setInterval(mainTimer, 1000)
   function mainTimer() {
-    //timer.textContent = 'Time Remaining :' + ' ' + totalTime
-
     totalTime--
 
     if (totalTime < 0) {
@@ -259,8 +261,20 @@ var createTimeInterval = function () {
       clearInterval(timeInterval)
       var question = document.querySelector('.question-quiz')
       var answerList = document.querySelector('.answers-list')
+
       question.remove()
       answerList.remove()
+      if (document.querySelector('.display-result') != null) {
+        document.querySelector('.display-result').remove()
+      }
+
+      if (document.querySelector('.test-completed-heading') != null) {
+        document.querySelector('.test-completed-heading').remove()
+        document.querySelector('.final-score').remove()
+        document.querySelector('.initials-label').remove()
+        document.querySelector('.enter-initials').remove()
+        document.querySelector('.btn-submit').remove()
+      }
       createQuestionAnswerEl(totalQuestions, quesAnsObj, totalScore)
     }
   }
@@ -293,18 +307,19 @@ var createScoreListEl = function (objInitScore) {
 }
 var quizButtonHandler = function (event) {
   var targetEl = event.target
-
   //start button was clicked
   if (
     targetEl.matches('.btn-start-quiz') ||
     targetEl.matches(".btn-start-quiz[data-val='start-quiz']")
   ) {
+    //remove existing intro page
     document.querySelector(".heading-quiz[data-val='intro-heading']").remove()
     document.querySelector(".quiz-description[data-val='intro-desc']").remove()
     document.querySelector(".btn-start-quiz[data-val='start-quiz']").remove()
-
+    //create new content - in this case it is question answer or final score page
     createQuestionAnswerEl(questionIdCounter, quesAnsObj, totalScore)
-    // createTimeInterval()
+    //also start the timer
+    createTimeInterval()
   }
 }
 var submitButtonHandler = function (event) {
@@ -317,17 +332,18 @@ var submitButtonHandler = function (event) {
       initial: inputInitial,
       score: finalScore,
     }
-    highScore.push(objInitScore)
+    highScore.push(objInitScore) //high score is a array and inserting the obj into the array
+
     var keyStorageScore = 'scores'
-    saveScore(keyStorageScore, highScore)
+    saveScore(keyStorageScore, highScore) // key and value - value here is an array of object
     var objInitialScore = loadHighScore(keyStorageScore) //loading the object to a variable
-    //console.log('the object is: ' + objInitialScore)
+
     finalScoreContainer.remove()
     initialsContainer.remove()
     if (document.querySelector(".display-result[data-val='result']") != null) {
       document.querySelector(".display-result[data-val='result']").remove()
     }
-    createScoreListEl(objInitialScore)
+    createScoreListEl(objInitScore) //creating score list passing the object
   }
 }
 
@@ -365,6 +381,9 @@ var goBackButtonHandler = function (event) {
 }
 
 btnGoBackClearScore.addEventListener('click', goBackButtonHandler)
+//score submit button handler
 initialsContainer.addEventListener('click', submitButtonHandler)
+//question and answer event handler
 containerAnswer.addEventListener('click', quizAnswerHandler)
+//start the quiz
 startButton.addEventListener('click', quizButtonHandler)
