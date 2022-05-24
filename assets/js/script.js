@@ -69,7 +69,7 @@ var arrCorrectAnswer = [
   '3. filter()',
 ]
 var totalQuestions = 5
-var totalTime = 100
+var totalTime = 25
 var keyLocalStorage = 'SCORE'
 
 var createQuestionAnswerEl = function (
@@ -158,18 +158,22 @@ var createQuestionAnswerEl = function (
     case 5:
       var finalScoreHeading = document.createElement('h2')
       finalScoreHeading.className = 'test-completed-heading'
+      finalScoreHeading.setAttribute('data-val', 'completed-heading')
       finalScoreHeading.textContent = quesAnsObj.finalMesg
       finalScoreContainer.appendChild(finalScoreHeading)
       var finalScoreContent = document.createElement('p')
       finalScoreContent.className = 'final-score'
+      finalScoreContent.setAttribute('data-val', 'label-final-score')
       finalScoreContent.textContent = 'Your Final Score is : '
       var displayTotalScore = document.createElement('span')
       displayTotalScore.className = 'total-score'
+      displayTotalScore.setAttribute('data-val', 'display-total-score')
       displayTotalScore.textContent = totalScore
       finalScoreContent.appendChild(displayTotalScore)
       finalScoreContainer.appendChild(finalScoreContent)
       var initialLabel = document.createElement('label')
       initialLabel.className = 'initials-label'
+      initialLabel.setAttribute('data-val', 'label-initial')
       initialLabel.textContent = 'Enter Your Initials :'
       initialsContainer.appendChild(initialLabel)
       var inputInitials = document.createElement('input')
@@ -179,6 +183,7 @@ var createQuestionAnswerEl = function (
       initialsContainer.appendChild(inputInitials)
       var btnSubmit = document.createElement('button')
       btnSubmit.className = 'btn-submit'
+      btnSubmit.setAttribute('data-val', 'submit-button')
       btnSubmit.textContent = 'Submit'
       initialsContainer.appendChild(btnSubmit)
   }
@@ -192,12 +197,13 @@ var quizAnswerHandler = function (event) {
 
   if (targetEl.matches('.answer')) {
     var questionIdCounter = targetEl.getAttribute('data-qa-id')
-    var question = document.querySelector(
-      ".question-quiz[data-qa-id='" + questionIdCounter + "']",
-    )
-    var answerList = document.querySelector(
-      ".answers-list[data-qa-id='" + questionIdCounter + "']",
-    )
+    // var question = document.querySelector(
+    //   ".question-quiz[data-qa-id='" + questionIdCounter + "']",
+    // )
+
+    // var answerList = document.querySelector(
+    //   ".answers-list[data-qa-id='" + questionIdCounter + "']",
+    // )
 
     //collect total Score
     var choice = targetEl.getAttribute('data-val')
@@ -207,33 +213,36 @@ var quizAnswerHandler = function (event) {
     } else if (!arrCorrectAnswer.includes(choice)) {
       timer.textContent = 'Time Remaining :' + ' ' + totalTime
     }
+
+    var question = document.querySelector('.question-quiz')
+    var answerList = document.querySelector('.answers-list')
+
+    question.remove()
+    answerList.remove()
+    questionIdCounter++
+
+    createQuestionAnswerEl(questionIdCounter, quesAnsObj, totalScore)
+
+    //writing the display result code
+    if (
+      document.querySelector(".display-result[data-val='result']") !=
+        undefined ||
+      document.querySelector(".display-result[data-val='result']") != null
+    ) {
+      document.querySelector(".display-result[data-val='result']").remove()
+    }
+    var displayResultEl = document.createElement('div') //div
+    displayResultEl.className = 'display-result'
+    if (arrCorrectAnswer.includes(choice)) {
+      displayResultEl.textContent = 'Correct !!'
+    } else {
+      displayResultEl.textContent = 'Wrong !!'
+    }
+
+    displayResultEl.setAttribute('data-val', 'result')
+    resultContainer.appendChild(displayResultEl)
   }
-
-  question.remove()
-  answerList.remove()
-  questionIdCounter++
-
-  createQuestionAnswerEl(questionIdCounter, quesAnsObj, totalScore)
-
-  //writing the display result code
-  if (
-    document.querySelector(".display-result[data-val='result']") != undefined ||
-    document.querySelector(".display-result[data-val='result']") != null
-  ) {
-    document.querySelector(".display-result[data-val='result']").remove()
-  }
-  var displayResultEl = document.createElement('div') //div
-  displayResultEl.className = 'display-result'
-  if (arrCorrectAnswer.includes(choice)) {
-    displayResultEl.textContent = 'Correct !!'
-  } else {
-    displayResultEl.textContent = 'Wrong !!'
-  }
-
-  displayResultEl.setAttribute('data-val', 'result')
-  resultContainer.appendChild(displayResultEl)
 }
-
 var saveScore = function (key, highScore) {
   var existingEntries = JSON.parse(localStorage.getItem(key) || '[]') //if empty or existing string to arr
   existingEntries.push(highScore) // push new array to the existing array
@@ -390,24 +399,46 @@ var goBackButtonHandler = function (event) {
 
 var viewHighScoreHandler = function (event) {
   var targetEl = event.target
+
   if (targetEl.matches('.view-score')) {
     if (document.querySelector('.heading-quiz') != null) {
       document.querySelector('.heading-quiz').remove()
       document.querySelector('.quiz-description').remove()
       document.querySelector('.btn-start-quiz').remove()
-    } else if (document.querySelector('.question-quiz') != null) {
+    }
+
+    if (document.querySelector('.question-quiz') != null) {
       document.querySelector('.question-quiz').remove()
       document.querySelector('.answer-container').remove()
       if (document.querySelector('.display-result') != null) {
         document.querySelector('.display-result').remove()
       }
-    } else if (document.querySelector('.test-completed-heading') != null) {
-      document.querySelector('.test-completed-heading').remove()
-      document.querySelector('.final-score').remove()
-      if (document.querySelector('.display-result') != null) {
-        document.querySelector('.display-result').remove()
-      }
     }
+
+    if (
+      document.querySelector(
+        '.test-completed-heading[data-val="completed-heading"]',
+      ) != null
+    ) {
+      document
+        .querySelector('.test-completed-heading[data-val="completed-heading"]')
+        .remove()
+      document.querySelector('.final-score').remove()
+      document.querySelector('.initials-label').remove()
+      document.querySelector('.enter-initials').remove()
+      document.querySelector('.btn-submit').remove()
+    }
+    if (document.querySelector('.display-result') != null) {
+      document.querySelector('.display-result').remove()
+    }
+
+    if (document.querySelector('.view-score-heading') != null) {
+      document.querySelector('.view-score-heading').remove()
+      document.querySelector('.score-list').remove()
+      document.querySelector('.btn-go-back').remove()
+      console.log('i am being executed.')
+    }
+
     if (document.querySelector('.time-interval') != null) {
       document.querySelector('.time-interval').remove()
     }
