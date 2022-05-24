@@ -1,5 +1,5 @@
 var mainContent = document.querySelector('#page-content') //page content
-var clickHighScore = document.querySelector('.view-score') //view high scores
+var viewHighScore = document.querySelector('.view-score-container') //view high scores
 var quizInstruction = document.querySelector('.quiz-instruction-container') //quiz instruction //div
 var questionAnswerContent = document.querySelector('.question-answer-wrapper') //question answer container
 var quizHeading = document.querySelector('.heading-quiz') //h2 quiz heading
@@ -8,6 +8,7 @@ var containerQuestion = document.querySelector('.question-container') //div - qu
 var containerAnswer = document.querySelector('.answer-container') //div - answer options
 var startButton = document.querySelector('.btn-start-quiz')
 var resultContainer = document.querySelector('.result-container') //section - display result
+var finalScorePage = document.querySelector('.final-score-initial-container') //section - final score display
 var finalScoreContainer = document.querySelector('.final-score-container') //div - final score display
 var initialsContainer = document.querySelector('.initials-container') //div - initials submit container
 var viewScoreList = document.querySelector('.view-high-score') // div//view the score list after submit button
@@ -304,6 +305,9 @@ var createScoreListEl = function (objInitScore) {
   btnClearScore.className = 'btn-clear-score'
   btnClearScore.textContent = 'Clear high score'
   btnGoBackClearScore.appendChild(btnClearScore)
+  if (document.querySelector('.time-interval') != null) {
+    document.querySelector('.time-interval').remove()
+  }
 }
 var quizButtonHandler = function (event) {
   var targetEl = event.target
@@ -343,6 +347,7 @@ var submitButtonHandler = function (event) {
     if (document.querySelector(".display-result[data-val='result']") != null) {
       document.querySelector(".display-result[data-val='result']").remove()
     }
+
     createScoreListEl(objInitScore) //creating score list passing the object
   }
 }
@@ -380,6 +385,45 @@ var goBackButtonHandler = function (event) {
   }
 }
 
+var viewHighScoreHandler = function (event) {
+  var targetEl = event.target
+  if (targetEl.matches('.view-score')) {
+    if (document.querySelector('.heading-quiz') != null) {
+      document.querySelector('.heading-quiz').remove()
+      document.querySelector('.quiz-description').remove()
+      document.querySelector('.btn-start-quiz').remove()
+    } else if (document.querySelector('.question-quiz') != null) {
+      document.querySelector('.question-quiz').remove()
+      document.querySelector('.answer-container').remove()
+      if (document.querySelector('.display-result') != null) {
+        document.querySelector('.display-result').remove()
+      }
+    } else if (document.querySelector('.test-completed-heading') != null) {
+      document.querySelector('.test-completed-heading').remove()
+      document.querySelector('.final-score').remove()
+      if (document.querySelector('.display-result') != null) {
+        document.querySelector('.display-result').remove()
+      }
+    }
+    if (document.querySelector('.time-interval') != null) {
+      document.querySelector('.time-interval').remove()
+    }
+    createScoreListEl(objInitScore)
+  }
+}
+var removeResultDisplayHandler = function (event) {
+  var targetEl = event.target
+  if (targetEl.matches('.enter-initials')) {
+    if (document.querySelector('.display-result') != null) {
+      document.querySelector('.display-result').remove()
+    }
+  }
+}
+//textbox event handler - remove result
+finalScorePage.addEventListener('click', removeResultDisplayHandler)
+//event handlers
+viewHighScore.addEventListener('click', viewHighScoreHandler)
+//go back button handler
 btnGoBackClearScore.addEventListener('click', goBackButtonHandler)
 //score submit button handler
 initialsContainer.addEventListener('click', submitButtonHandler)
